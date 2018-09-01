@@ -75,6 +75,7 @@ public class SurfaceCallback implements Callback {
 
             // update current value
             mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * maxX;
+            mCurrentMoney = Math.round(mCurrentMoney);
 
             // callback
             if (mInfoUpdateListener != null) {
@@ -197,6 +198,27 @@ public class SurfaceCallback implements Callback {
         float money_4jin = money_x * (1 - ratio_sum);
         float no_tax = 3500f;
         if (money_4jin < no_tax) {
+
+            if (updateInfo) {
+                mInfo = String.format(
+                        "税前收入: %.2f\n" +
+                                "五险一金: %.2f\n" +
+                                "减去五险一金: %.2f\n" +
+                                "所得税税率: %.2f\n" +
+                                "所得税基数: %.2f\n" +
+                                "速算扣除数: %.2f\n" +
+                                "个人所得税: %.2f\n" +
+                                "税后收入: %.2f",
+                        money_x,
+                        ratio_sum,
+                        money_4jin,
+                        0f,
+                        0f,
+                        0f,
+                        0f,
+                        money_x);
+            }
+
             return money_x;
         }
 
@@ -204,7 +226,7 @@ public class SurfaceCallback implements Callback {
 
         if (updateInfo) {
             mInfo = String.format(
-                    "税前收入: %.2f:\n" +
+                    "税前收入: %.2f\n" +
                     "五险一金: %.2f\n" +
                     "减去五险一金: %.2f\n" +
                     "所得税税率: %.2f\n" +
