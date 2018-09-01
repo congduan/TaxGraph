@@ -9,9 +9,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 
-public class SurfaceCallback implements Callback {
+public class GraphPanel implements Callback {
 
-    private static final String TAG = SurfaceCallback.class.getSimpleName();
+    private static final String TAG = GraphPanel.class.getSimpleName();
 
     public interface InfoUpdateListener {
         void onUpdate(String x);
@@ -35,7 +35,7 @@ public class SurfaceCallback implements Callback {
 
     private InfoUpdateListener mInfoUpdateListener;
 
-    public SurfaceCallback(SurfaceHolder surfaceHolder) {
+    public GraphPanel(SurfaceHolder surfaceHolder) {
         this.mSurfaceHolder = surfaceHolder;
     }
 

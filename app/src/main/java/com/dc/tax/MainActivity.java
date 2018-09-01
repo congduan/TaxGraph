@@ -8,7 +8,7 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.dc.tax.data.SurfaceCallback;
+import com.dc.tax.data.GraphPanel;
 
 /**
  * 功能：
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity  {
 
     SurfaceView mSurfaceView;
     SurfaceHolder mSurfaceHolder;
-    SurfaceCallback mSurfaceCallback;
+    GraphPanel mSurfaceCallback;
 
     private TextView mInfoText;
 
@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity  {
 
         mSurfaceView = findViewById(R.id.surfaceView);
         mSurfaceHolder = mSurfaceView.getHolder();
-        mSurfaceCallback = new SurfaceCallback(mSurfaceHolder);
-        mSurfaceCallback.setOnInfoUpdateListener(new SurfaceCallback.InfoUpdateListener() {
+        mSurfaceCallback = new GraphPanel(mSurfaceHolder);
+        mSurfaceCallback.setOnInfoUpdateListener(new GraphPanel.InfoUpdateListener() {
             @Override
             public void onUpdate(String info) {
                 mInfoText.setText(info);
