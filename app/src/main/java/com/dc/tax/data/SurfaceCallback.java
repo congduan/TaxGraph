@@ -13,8 +13,8 @@ public class SurfaceCallback implements Callback {
 
     private static final String TAG = SurfaceCallback.class.getSimpleName();
 
-    public interface InfoUpdateListener{
-        void onUpdate(float x);
+    public interface InfoUpdateListener {
+        void onUpdate(String x);
     }
 
     private SurfaceHolder mSurfaceHolder;
@@ -31,6 +31,7 @@ public class SurfaceCallback implements Callback {
     private float mLastX = 0.0f;
 
     private float mCurrentMoney;
+    private String mInfo = "";
 
     private InfoUpdateListener mInfoUpdateListener;
 
@@ -38,7 +39,7 @@ public class SurfaceCallback implements Callback {
         this.mSurfaceHolder = surfaceHolder;
     }
 
-    public void init(){
+    public void init() {
         strokePaint = new Paint();
         strokePaint.setColor(Color.RED);
         strokePaint.setAntiAlias(true);
@@ -52,23 +53,32 @@ public class SurfaceCallback implements Callback {
         fillPaint.setStyle(Paint.Style.FILL);
     }
 
-    public void onTouchEvent(MotionEvent motionEvent){
+    /**
+     * 屏幕滑动
+     *
+     * @param motionEvent
+     */
+    public void onTouchEvent(MotionEvent motionEvent) {
         float x = motionEvent.getX();
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             float delta = x - mLastX;
 
-            if(mCurrentX == 0){
+            if (mCurrentX == 0) {
                 mCurrentX = 0.1f * canvasWidth;
-            }else{
+            } else {
                 mCurrentX += delta;
-                if(mCurrentX <= 0.1f * canvasWidth){
+                if (mCurrentX <= 0.1f * canvasWidth) {
                     mCurrentX = 0.1f * canvasWidth;
                 }
             }
             mLastX = x;
+
+            // update current value
             mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * maxX;
-            if(mInfoUpdateListener != null){
-                mInfoUpdateListener.onUpdate(mCurrentMoney);
+
+            // callback
+            if (mInfoUpdateListener != null) {
+                mInfoUpdateListener.onUpdate(mInfo);
             }
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
                 || motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -78,7 +88,7 @@ public class SurfaceCallback implements Callback {
         draw(canvasWidth, canvasHeight);
     }
 
-    public void setOnInfoUpdateListener(InfoUpdateListener listener){
+    public void setOnInfoUpdateListener(InfoUpdateListener listener) {
         mInfoUpdateListener = listener;
     }
 
@@ -142,7 +152,7 @@ public class SurfaceCallback implements Callback {
         // draw curve
         for (int i = 0; i < maxX; i += 100) {
             float money_x = i;
-            float money_y = calcTax(money_x);
+            float money_y = calcTax(money_x, false);
             Log.i(TAG, "draw: x=" + money_x + ", y=" + money_y);
 
             float px = 0.1f * width + money_x / maxX * W;
@@ -160,7 +170,7 @@ public class SurfaceCallback implements Callback {
 
     private void drawMark(Canvas canvas) {
         // draw mark
-        float money_y = calcTax(mCurrentMoney);
+        float money_y = calcTax(mCurrentMoney, true);
         float px = 0.1f * canvasWidth + mCurrentMoney / maxX * (0.9f * canvasWidth);
         float py = 0.9f * canvasHeight - money_y / maxY * (0.9f * canvasHeight);
         strokePaint.setColor(Color.BLACK);
@@ -178,7 +188,7 @@ public class SurfaceCallback implements Callback {
         canvas.drawText(String.format("%.2f", money_y), px + 10, py + textSize, strokePaint);
     }
 
-    private float calcTax(float money_x) {
+    private float calcTax(float money_x, boolean updateInfo) {
         float ratio_1 = 0.07f;
         float ratio_2 = 0.02f;
         float ratio_3 = 0.005f;
@@ -192,17 +202,25 @@ public class SurfaceCallback implements Callback {
 
         float money_tax_base = money_4jin - no_tax;
 
-//        if (money_x > 000) {
-//            Log.i(TAG, String.format("%.2f: ratio_4jin=%.2f, money_4jin_after=%.2f, ratio=%.2f base=%.2f, susuan=%.2f, tax=%.2f, after=%.2f",
-//                    money_x,
-//                    ratio_sum,
-//                    money_4jin,
-//                    ratio(money_tax_base),
-//                    money_tax_base,
-//                    susuan(money_tax_base),
-//                    (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base)),
-//                    money_4jin - (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base))));
-//        }
+        if (updateInfo) {
+            mInfo = String.format(
+                    "税前收入: %.2f:\n" +
+                    "五险一金: %.2f\n" +
+                    "减去五险一金: %.2f\n" +
+                    "所得税税率: %.2f\n" +
+                    "所得税基数: %.2f\n" +
+                    "速算扣除数: %.2f\n" +
+                    "个人所得税: %.2f\n" +
+                    "税后收入: %.2f",
+                    money_x,
+                    ratio_sum,
+                    money_4jin,
+                    ratio(money_tax_base),
+                    money_tax_base,
+                    susuan(money_tax_base),
+                    (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base)),
+                    money_4jin - (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base)));
+        }
 
 
         return money_4jin - (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base));

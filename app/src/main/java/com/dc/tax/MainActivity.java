@@ -2,10 +2,10 @@ package com.dc.tax;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.dc.tax.data.SurfaceCallback;
@@ -17,22 +17,26 @@ import com.dc.tax.data.SurfaceCallback;
  * 3. 拖到查看当前收入
  * 4. 不同省份视图
  * 5. 不同类型视图：社保视图、公积金视图、税后收入视图
+ * 6. 饼图
+ * 7. 整数自动吸附
  */
 public class MainActivity extends AppCompatActivity  {
 
-    private static final String TAG = "Tax";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     SurfaceView mSurfaceView;
     SurfaceHolder mSurfaceHolder;
     SurfaceCallback mSurfaceCallback;
 
-    private TextView mMoneyText;
-
-    GestureDetector mGestureDetector;
+    private TextView mInfoText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_main);
 
         initView();
@@ -40,62 +44,24 @@ public class MainActivity extends AppCompatActivity  {
 
     private void initView() {
 
-        mMoneyText = findViewById(R.id.money);
+        mInfoText = findViewById(R.id.info);
 
         mSurfaceView = findViewById(R.id.surfaceView);
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceCallback = new SurfaceCallback(mSurfaceHolder);
         mSurfaceCallback.setOnInfoUpdateListener(new SurfaceCallback.InfoUpdateListener() {
             @Override
-            public void onUpdate(float currentMoney) {
-                mMoneyText.setText(String.format("%.2f", currentMoney));
+            public void onUpdate(String info) {
+                mInfoText.setText(info);
             }
         });
         mSurfaceCallback.init();
         mSurfaceHolder.addCallback(mSurfaceCallback);
-
-        mGestureDetector = new GestureDetector(new GestureDetector.OnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent motionEvent) {
-
-                float x = motionEvent.getX();
-                mMoneyText.setText(String.valueOf(x));
-
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent motionEvent) {
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                return true;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                return false;
-            }
-        });
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         mSurfaceCallback.onTouchEvent(motionEvent);
-        mGestureDetector.onTouchEvent(motionEvent);
         return super.onTouchEvent(motionEvent);
     }
 
