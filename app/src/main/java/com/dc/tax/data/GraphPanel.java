@@ -231,7 +231,7 @@ public class GraphPanel implements Callback {
         strokePaint.setTextSize(textSize);
         strokePaint.getTextBounds(text, 0, text.length(), bound);
         canvas.drawText(text, 0.1f * width + 10, 0.9f * height + bound.height() + 10, strokePaint);
-        canvas.drawText(String.format("x"), width - 4 * textSize, 0.9f * height + textSize, strokePaint);
+        canvas.drawText(String.format("x"), width - bound.width(), 0.9f * height + bound.height() + 10, strokePaint);
         canvas.drawText(String.format("y"), 0.1f * width - 2 * textSize, textSize, strokePaint);
 
         // TODO draw grid
