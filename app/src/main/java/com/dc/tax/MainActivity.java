@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity  {
             public void onUpdate(String info) {
                 mInfoText.setText(info);
             }
+
+            @Override
+            public void onUpdateCurrentValue(float value) {
+                mRoundGraphPanel.updateCurrentValue(value);
+            }
         });
         mGraphPanel.init();
         mSurfaceHolder.addCallback(mGraphPanel);

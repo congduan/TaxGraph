@@ -102,12 +102,18 @@ public class RoundGraphPanel implements Callback {
                 centerY - radius,
                 centerX + radius,
                 centerY + radius);
-        canvas.drawArc(rectF, 0, 90, true, fillPaint);
+        float sweepAngle = mCurrentMoney / maxX * 360;
+        canvas.drawArc(rectF, 0, sweepAngle, true, fillPaint);
 
         // draw arc stroke
         strokePaint.setColor(Color.BLUE);
-        canvas.drawArc(rectF, 0, 90, true, strokePaint);
+        canvas.drawArc(rectF, 0, sweepAngle, true, strokePaint);
 
         mSurfaceHolder.unlockCanvasAndPost(canvas);
+    }
+
+    public void updateCurrentValue(float value){
+        this.mCurrentMoney = value;
+        draw(canvasWidth, canvasHeight);
     }
 }

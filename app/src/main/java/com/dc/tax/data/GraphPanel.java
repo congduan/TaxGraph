@@ -15,6 +15,7 @@ public class GraphPanel implements Callback {
 
     public interface InfoUpdateListener {
         void onUpdate(String x);
+        void onUpdateCurrentValue(float value);
     }
 
     private SurfaceHolder mSurfaceHolder;
@@ -80,6 +81,7 @@ public class GraphPanel implements Callback {
             // callback
             if (mInfoUpdateListener != null) {
                 mInfoUpdateListener.onUpdate(mInfo);
+                mInfoUpdateListener.onUpdateCurrentValue(mCurrentMoney);
             }
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
                 || motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
