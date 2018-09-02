@@ -69,12 +69,19 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="左右滑动图标查看收入数据\n目前仅支持上海"
+                    android:layout_marginBottom="10dp"/>
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:background="@drawable/bg_button"
                     android:minHeight="0dp"
+                    android:visibility="gone"
                     android:text="输入数值" />
 
                 <Button
