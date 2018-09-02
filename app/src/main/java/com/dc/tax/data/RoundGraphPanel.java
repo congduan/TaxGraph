@@ -30,7 +30,7 @@ public class RoundGraphPanel implements Callback {
     private float mCurrentMoney;
     private String mInfo = "";
 
-    float mCirclePadding = 50.0f;
+    float mCirclePadding = 200.0f;
 
     public RoundGraphPanel(SurfaceHolder surfaceHolder) {
         this.mSurfaceHolder = surfaceHolder;
