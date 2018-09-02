@@ -1,7 +1,10 @@
 package com.dc.tax;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -59,6 +62,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUpdate(String info) {
                 mInfoText.setText(info);
+                String text = String.format(
+                        "当前城市: 上海\n\n个人所得税:%.2f%%\n住房公积金: %.2f%%\n医疗保险: %.2f%%\n失业保险: %.2f%%\n养老保险: %.2f%%\n税后月薪: %.2f%%",
+                        mTaxCalculator.getMoneyTax() / mTaxCalculator.getMoneyBeforeTax() * 100,
+                        mTaxCalculator.getGongjijin() / mTaxCalculator.getMoneyBeforeTax() * 100,
+                        mTaxCalculator.getYiliao() / mTaxCalculator.getMoneyBeforeTax() * 100,
+                        mTaxCalculator.getShiye() / mTaxCalculator.getMoneyBeforeTax() * 100,
+                        mTaxCalculator.getYiliao() / mTaxCalculator.getMoneyBeforeTax() * 100,
+                        mTaxCalculator.getMoneyAfterTax() / mTaxCalculator.getMoneyBeforeTax() * 100);
+                mRoundInfoText.setText(text, TextView.BufferType.SPANNABLE);
+
+                Spannable str = (Spannable) mRoundInfoText.getText();
+                int i1 = text.indexOf("个人所得税");
+                int i2 = text.indexOf("住房公积金");
+                int i3 = text.indexOf("医疗保险");
+                int i4 = text.indexOf("失业保险");
+                int i5 = text.indexOf("养老保险");
+                int i6 = text.indexOf("税后月薪");
+
+                str.setSpan(new ForegroundColorSpan(Color.BLUE), i1, i2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                str.setSpan(new ForegroundColorSpan(Color.RED), i2, i3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                str.setSpan(new ForegroundColorSpan(Color.YELLOW), i3, i4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                str.setSpan(new ForegroundColorSpan(Color.GREEN), i4, i5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                str.setSpan(new ForegroundColorSpan(Color.CYAN), i5, i6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                str.setSpan(new ForegroundColorSpan(Color.GRAY), i6, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
             @Override
@@ -79,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         mInfoText.setText(mTaxCalculator.toString());
 
         mRoundInfoText = findViewById(R.id.round_info);
-        mRoundInfoText.setText("住房公积金:\n医疗保险:\n失业保险:\n养老保险:\n税后月薪:");
+        mRoundInfoText.setText("当前城市: 上海\n\n个人所得税:\n住房公积金:\n医疗保险:\n失业保险:\n养老保险:\n税后月薪:");
     }
 
     @Override

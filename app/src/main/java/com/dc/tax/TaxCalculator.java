@@ -16,6 +16,27 @@ public class TaxCalculator implements Calculable {
     private float moneyTax;         //所得税缴纳数额
     private float moneySusuan;      //所得税速算扣除数
 
+    public float getGongjijin() {
+        return gongjijin;
+    }
+
+    public float getYiliao() {
+        return yiliao;
+    }
+
+    public float getShiye() {
+        return shiye;
+    }
+
+    public float getYanglao() {
+        return yanglao;
+    }
+
+    private float gongjijin;
+    private float yiliao;
+    private float shiye;
+    private float yanglao;
+
     /* 个人需缴纳四金 */
     public static final float RATIO_GONGJIJIN = 0.07f; //公积金
     public static final float RATIO_YILIAO = 0.02f; //医疗保险
@@ -34,10 +55,10 @@ public class TaxCalculator implements Calculable {
 
     public float calcTax(float money_x) {
         moneyBeforeTax = money_x;
-        float gongjijin = getGongjijin(money_x * RATIO_GONGJIJIN);
-        float yiliao = getShebaoBase(money_x) * RATIO_YILIAO;
-        float shiye = getShebaoBase(money_x) * RATIO_SHIYE;
-        float yanglao = getShebaoBase(money_x) * RATIO_YANGLAO;
+        gongjijin = getGongjijin(money_x * RATIO_GONGJIJIN);
+        yiliao = getShebaoBase(money_x) * RATIO_YILIAO;
+        shiye = getShebaoBase(money_x) * RATIO_SHIYE;
+        yanglao = getShebaoBase(money_x) * RATIO_YANGLAO;
         money4Jin = gongjijin + yiliao + shiye + yanglao;
         moneyAfter4Jin = money_x - money4Jin;
 
@@ -154,11 +175,15 @@ public class TaxCalculator implements Calculable {
         return moneyBeforeTax;
     }
 
-    public float getMoney4Jin() {
-        return money4Jin;
+    public float getMoneyAfterTax() {
+        return moneyAfterTax;
     }
 
     public float getMoneyTax() {
         return moneyTax;
     }
+
+
+
+
 }

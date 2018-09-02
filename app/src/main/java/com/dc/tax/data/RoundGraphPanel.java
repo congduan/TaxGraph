@@ -106,13 +106,52 @@ public class RoundGraphPanel implements Callback {
         canvas.drawArc(rectF, 0, 360, true, fillPaint);
         canvas.drawLine(centerX, centerY, centerX, centerY - radius, strokePaint);
 
-        // draw arc
-        fillPaint.setColor(Color.parseColor("#FFFF0000"));
-        float sweepAngle = mTaxCalculator.getMoneyTax() / mTaxCalculator.getMoneyBeforeTax() * 360;
-        canvas.drawArc(rectF, -90, sweepAngle, true, fillPaint);
-        // draw arc stroke
-        strokePaint.setColor(Color.BLUE);
-        canvas.drawArc(rectF, -90, sweepAngle, true, strokePaint);
+        if (mTaxCalculator.getMoneyBeforeTax() > 0) {
+            // 个人所得税
+            fillPaint.setColor(Color.BLUE);
+            float sweepAngle = mTaxCalculator.getMoneyTax() / mTaxCalculator.getMoneyBeforeTax() * 360;
+            float startAngle = -90;
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, fillPaint);
+            // draw arc stroke
+            strokePaint.setColor(Color.BLUE);
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, strokePaint);
+
+            // 住房公积金
+            startAngle += sweepAngle;
+            fillPaint.setColor(Color.RED);
+            sweepAngle = mTaxCalculator.getGongjijin() / mTaxCalculator.getMoneyBeforeTax() * 360;
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, fillPaint);
+            // draw arc stroke
+            strokePaint.setColor(Color.BLUE);
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, strokePaint);
+
+            // 医疗
+            startAngle += sweepAngle;
+            fillPaint.setColor(Color.YELLOW);
+            sweepAngle = mTaxCalculator.getYiliao() / mTaxCalculator.getMoneyBeforeTax() * 360;
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, fillPaint);
+            // draw arc stroke
+            strokePaint.setColor(Color.BLUE);
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, strokePaint);
+
+            // 失业
+            startAngle += sweepAngle;
+            fillPaint.setColor(Color.GREEN);
+            sweepAngle = mTaxCalculator.getShiye() / mTaxCalculator.getMoneyBeforeTax() * 360;
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, fillPaint);
+            // draw arc stroke
+            strokePaint.setColor(Color.BLUE);
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, strokePaint);
+
+            // 养老
+            startAngle += sweepAngle;
+            fillPaint.setColor(Color.CYAN);
+            sweepAngle = mTaxCalculator.getYanglao() / mTaxCalculator.getMoneyBeforeTax() * 360;
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, fillPaint);
+            // draw arc stroke
+            strokePaint.setColor(Color.BLUE);
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, strokePaint);
+        }
 
         // draw label
         /*
