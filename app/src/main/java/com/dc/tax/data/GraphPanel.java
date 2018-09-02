@@ -4,19 +4,25 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.util.Log;
+import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 
 import com.dc.tax.TaxCalculator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GraphPanel implements Callback {
 
     private static final String TAG = GraphPanel.class.getSimpleName();
 
+    private static final int UNIT_XIFU = 100; // 吸附单位
+
     public interface InfoUpdateListener {
         void onUpdate(String x);
+
         void onUpdateCurrentValue(float value);
     }
 
@@ -29,13 +35,17 @@ public class GraphPanel implements Callback {
     Paint strokePaint;
     Paint fillPaint;
 
+    private int minX = 1000;
     private int maxX = 20000;
     private int maxY = 16000;
 
     private float mCurrentX = 0.0f;
     private float mLastX = 0.0f;
 
-    private float mCurrentMoney;
+    private float mCurrentMoney = minX;
+
+    // 所有的数据
+    private List<PointF> pointFList = new ArrayList<PointF>();
 
     private InfoUpdateListener mInfoUpdateListener;
 
@@ -79,8 +89,12 @@ public class GraphPanel implements Callback {
             mLastX = x;
 
             // update current value
-            mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * maxX;
-            mCurrentMoney = Math.round(mCurrentMoney);
+            mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * (maxX - minX) + minX;
+            // mCurrentMoney = Math.round(mCurrentMoney); // 吸附整数
+            // 吸附100的倍数
+            if(mCurrentMoney % UNIT_XIFU != 0){
+                mCurrentMoney = mCurrentMoney - mCurrentMoney % UNIT_XIFU;
+            }
 
             // callback
             if (mInfoUpdateListener != null) {
@@ -108,6 +122,22 @@ public class GraphPanel implements Callback {
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         canvasWidth = width;
         canvasHeight = height;
+
+        pointFList.clear();
+
+        float W = 0.9f * width;
+        float H = 0.9f * height;
+
+        for (int i = minX; i < maxX; i += 100) {
+            float money_x = i;
+            float money_y = mTaxCalculator.calcTax(money_x);
+
+            float px = 0.1f * width + (money_x - minX) / (maxX - minX) * W;
+            float py = H - money_y / maxY * H;
+
+            pointFList.add(new PointF(px, py));
+        }
+
         draw(width, height);
     }
 
@@ -145,7 +175,7 @@ public class GraphPanel implements Callback {
         // draw axes title
         float textSize = 30;
         strokePaint.setTextSize(textSize);
-        canvas.drawText("0", 0.1f * width - textSize, 0.9f * height + textSize, strokePaint);
+        canvas.drawText(String.format("x: %d", minX), 0.1f * width - textSize, 0.9f * height + textSize, strokePaint);
         canvas.drawText(String.format("x: %d", maxX), width - 4 * textSize, 0.9f * height + textSize, strokePaint);
         canvas.drawText(String.format("y: %d", maxY), 0.1f * width - 2 * textSize, textSize, strokePaint);
 
@@ -154,31 +184,22 @@ public class GraphPanel implements Callback {
         float W = 0.9f * width;
         float H = 0.9f * height;
 
-        float px_last = width - W;
-        float py_last = H;
+        float px_last = pointFList.get(0).x;
+        float py_last = pointFList.get(0).y;
         // draw curve
-        for (int i = 0; i < maxX; i += 100) {
-            float money_x = i;
-            float money_y = mTaxCalculator.calcTax(money_x, false);
-            Log.i(TAG, "draw: x=" + money_x + ", y=" + money_y);
-
-            float px = 0.1f * width + money_x / maxX * W;
-            float py = H - money_y / maxY * H;
+        for (int i = 1; i < pointFList.size(); i++) {
+            float px = pointFList.get(i).x;
+            float py = pointFList.get(i).y;
             strokePaint.setColor(Color.BLACK);
             canvas.drawLine(px_last, py_last, px, py, strokePaint);
             px_last = px;
             py_last = py;
         }
 
-        drawMark(canvas);
+        float money_y = mTaxCalculator.calcTax(mCurrentMoney);
 
-        mSurfaceHolder.unlockCanvasAndPost(canvas);
-    }
-
-    private void drawMark(Canvas canvas) {
-        // draw mark
-        float money_y = mTaxCalculator.calcTax(mCurrentMoney, true);
-        float px = 0.1f * canvasWidth + mCurrentMoney / maxX * (0.9f * canvasWidth);
+        // draw current mark
+        float px = 0.1f * canvasWidth + (mCurrentMoney - minX) / (maxX - minX) * (0.9f * canvasWidth);
         float py = 0.9f * canvasHeight - money_y / maxY * (0.9f * canvasHeight);
         strokePaint.setColor(Color.BLACK);
         strokePaint.setPathEffect(new DashPathEffect(new float[]{8, 8}, 0));
@@ -189,11 +210,11 @@ public class GraphPanel implements Callback {
         canvas.drawCircle(px, py, 10, fillPaint);
         strokePaint.setPathEffect(null);
 
-        int textSize = 30;
         strokePaint.setTextSize(30);
         canvas.drawText(String.format("%.2f", mCurrentMoney), px - (float) textSize / 2, 0.9f * canvasHeight + textSize, strokePaint);
         canvas.drawText(String.format("%.2f", money_y), px + 10, py + textSize, strokePaint);
-    }
 
+        mSurfaceHolder.unlockCanvasAndPost(canvas);
+    }
 
 }
