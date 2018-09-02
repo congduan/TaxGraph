@@ -21,7 +21,7 @@ public class AboutDialog extends DialogFragment implements View.OnClickListener 
         view.setOnClickListener(this);
 
         TextView text = view.findViewById(R.id.about_text);
-        text.setText("收入计算器：目前仅支持上海，后续逐渐支持更多城市，尽请期待.\n 联系: congduan@yeah.net");
+        text.setText("收入计算器：目前仅支持上海，后续逐渐支持更多城市，尽请期待.\n版本：v1.0\n联系方式: congduan@yeah.net");
 
         return view;
     }
