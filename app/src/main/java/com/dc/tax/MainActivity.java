@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.dc.tax.data.GraphPanel;
@@ -28,15 +29,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    SurfaceView mSurfaceView;
-    SurfaceView mSurfaceViewRound;
-    SurfaceHolder mSurfaceHolder;
-    SurfaceHolder mSurfaceHolderRound;
-    GraphPanel mGraphPanel;
-    RoundGraphPanel mRoundGraphPanel;
+    private SurfaceView mSurfaceView;
+    private SurfaceView mSurfaceViewRound;
+    private SurfaceHolder mSurfaceHolder;
+    private SurfaceHolder mSurfaceHolderRound;
+    private GraphPanel mGraphPanel;
+    private RoundGraphPanel mRoundGraphPanel;
 
     private TextView mInfoText;
     private TextView mRoundInfoText;
+    private Button mAboutButton;
 
     private TaxCalculator mTaxCalculator;
 
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
         mRoundInfoText = findViewById(R.id.round_info);
         mRoundInfoText.setText("当前城市: 上海\n\n个人所得税:\n住房公积金:\n医疗保险:\n失业保险:\n养老保险:\n税后月薪:");
+
+        mAboutButton = findViewById(R.id.about);
     }
 
     @Override
