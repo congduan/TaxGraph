@@ -2,15 +2,29 @@ package com.dc.tax;
 
 import com.dc.tax.data.TaxRato;
 
-public class TaxCalculator implements Calculable{
+/**
+ * 收入计算器
+ */
+public class TaxCalculator implements Calculable {
 
-    private float moneyBeforeTax;   //税前首日
+    private float moneyBeforeTax;   //税前收入
     private float moneyAfterTax;    //税后收入
-    private float moneyAfterShebao; //出去社保公积金之后的收入
+    private float moneyAfterShebao; //除去社保公积金之后的收入
+    private float moneyShebao;      //社保公积金缴纳数额
+    private float moneyTaxBase;     //所得税缴纳基数
+    private float taxRatio;         //所得税税率
+    private float moneyTax;         //所得税缴纳数额
+    private float moneySusuan;      //所得税速算扣除数
+
+    /* 个人需缴纳四金 */
+    public static final float ratio_1 = 0.07f; //公积金
+    public static final float ratio_2 = 0.02f; //医疗保险
+    public static final float ratio_3 = 0.005f;//失业保险
+    public static final float ratio_4 = 0.08f; //养老保险
 
     private String mInfo = "";
 
-    public TaxCalculator(){
+    public TaxCalculator() {
 
     }
 
@@ -23,10 +37,6 @@ public class TaxCalculator implements Calculable{
     }
 
     public float calcTax(float money_x, boolean updateInfo) {
-        float ratio_1 = 0.07f;
-        float ratio_2 = 0.02f;
-        float ratio_3 = 0.005f;
-        float ratio_4 = 0.08f;
         float ratio_sum = (ratio_1 + ratio_2 + ratio_3 + ratio_4);
         float money_4jin = money_x * (1 - ratio_sum);
         float no_tax = 3500f;
@@ -83,6 +93,7 @@ public class TaxCalculator implements Calculable{
 
     /**
      * 计算速算扣除数
+     *
      * @param x
      * @return
      */
@@ -97,6 +108,7 @@ public class TaxCalculator implements Calculable{
 
     /**
      * 计算税率
+     *
      * @param x
      * @return
      */
