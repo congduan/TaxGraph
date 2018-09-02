@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.dc.tax.data.GraphPanel;
+import com.dc.tax.data.RoundGraphPanel;
 
 /**
  * 功能：
@@ -25,8 +26,11 @@ public class MainActivity extends AppCompatActivity  {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     SurfaceView mSurfaceView;
+    SurfaceView mSurfaceViewRound;
     SurfaceHolder mSurfaceHolder;
-    GraphPanel mSurfaceCallback;
+    SurfaceHolder mSurfaceHolderRound;
+    GraphPanel mGraphPanel;
+    RoundGraphPanel mRoundGraphPanel;
 
     private TextView mInfoText;
 
@@ -48,20 +52,26 @@ public class MainActivity extends AppCompatActivity  {
 
         mSurfaceView = findViewById(R.id.surfaceView);
         mSurfaceHolder = mSurfaceView.getHolder();
-        mSurfaceCallback = new GraphPanel(mSurfaceHolder);
-        mSurfaceCallback.setOnInfoUpdateListener(new GraphPanel.InfoUpdateListener() {
+        mGraphPanel = new GraphPanel(mSurfaceHolder);
+        mGraphPanel.setOnInfoUpdateListener(new GraphPanel.InfoUpdateListener() {
             @Override
             public void onUpdate(String info) {
                 mInfoText.setText(info);
             }
         });
-        mSurfaceCallback.init();
-        mSurfaceHolder.addCallback(mSurfaceCallback);
+        mGraphPanel.init();
+        mSurfaceHolder.addCallback(mGraphPanel);
+
+        mSurfaceViewRound = findViewById(R.id.surfaceView_round);
+        mSurfaceHolderRound = mSurfaceViewRound.getHolder();
+        mRoundGraphPanel = new RoundGraphPanel(mSurfaceHolderRound);
+        mRoundGraphPanel.init();
+        mSurfaceHolderRound.addCallback(mRoundGraphPanel);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        mSurfaceCallback.onTouchEvent(motionEvent);
+        mGraphPanel.onTouchEvent(motionEvent);
         return super.onTouchEvent(motionEvent);
     }
 
