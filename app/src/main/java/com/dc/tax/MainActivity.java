@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity  {
 
     private TextView mInfoText;
 
+    private TaxCalculator mTaxCalculator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity  {
 
         setContentView(R.layout.activity_main);
 
+        mTaxCalculator = new TaxCalculator();
         initView();
     }
 
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity  {
 
         mSurfaceView = findViewById(R.id.surfaceView);
         mSurfaceHolder = mSurfaceView.getHolder();
-        mGraphPanel = new GraphPanel(mSurfaceHolder);
+        mGraphPanel = new GraphPanel(mSurfaceHolder, mTaxCalculator);
         mGraphPanel.setOnInfoUpdateListener(new GraphPanel.InfoUpdateListener() {
             @Override
             public void onUpdate(String info) {

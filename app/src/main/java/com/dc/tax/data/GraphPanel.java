@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 
+import com.dc.tax.TaxCalculator;
+
 public class GraphPanel implements Callback {
 
     private static final String TAG = GraphPanel.class.getSimpleName();
@@ -17,6 +19,8 @@ public class GraphPanel implements Callback {
         void onUpdate(String x);
         void onUpdateCurrentValue(float value);
     }
+
+    private TaxCalculator mTaxCalculator;
 
     private SurfaceHolder mSurfaceHolder;
     private int canvasWidth;
@@ -32,12 +36,12 @@ public class GraphPanel implements Callback {
     private float mLastX = 0.0f;
 
     private float mCurrentMoney;
-    private String mInfo = "";
 
     private InfoUpdateListener mInfoUpdateListener;
 
-    public GraphPanel(SurfaceHolder surfaceHolder) {
+    public GraphPanel(SurfaceHolder surfaceHolder, TaxCalculator calculator) {
         this.mSurfaceHolder = surfaceHolder;
+        this.mTaxCalculator = calculator;
     }
 
     public void init() {
@@ -80,7 +84,7 @@ public class GraphPanel implements Callback {
 
             // callback
             if (mInfoUpdateListener != null) {
-                mInfoUpdateListener.onUpdate(mInfo);
+                mInfoUpdateListener.onUpdate(mTaxCalculator.toString());
                 mInfoUpdateListener.onUpdateCurrentValue(mCurrentMoney);
             }
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
@@ -155,7 +159,7 @@ public class GraphPanel implements Callback {
         // draw curve
         for (int i = 0; i < maxX; i += 100) {
             float money_x = i;
-            float money_y = calcTax(money_x, false);
+            float money_y = mTaxCalculator.calcTax(money_x, false);
             Log.i(TAG, "draw: x=" + money_x + ", y=" + money_y);
 
             float px = 0.1f * width + money_x / maxX * W;
@@ -173,7 +177,7 @@ public class GraphPanel implements Callback {
 
     private void drawMark(Canvas canvas) {
         // draw mark
-        float money_y = calcTax(mCurrentMoney, true);
+        float money_y = mTaxCalculator.calcTax(mCurrentMoney, true);
         float px = 0.1f * canvasWidth + mCurrentMoney / maxX * (0.9f * canvasWidth);
         float py = 0.9f * canvasHeight - money_y / maxY * (0.9f * canvasHeight);
         strokePaint.setColor(Color.BLACK);
@@ -191,82 +195,5 @@ public class GraphPanel implements Callback {
         canvas.drawText(String.format("%.2f", money_y), px + 10, py + textSize, strokePaint);
     }
 
-    private float calcTax(float money_x, boolean updateInfo) {
-        float ratio_1 = 0.07f;
-        float ratio_2 = 0.02f;
-        float ratio_3 = 0.005f;
-        float ratio_4 = 0.08f;
-        float ratio_sum = (ratio_1 + ratio_2 + ratio_3 + ratio_4);
-        float money_4jin = money_x * (1 - ratio_sum);
-        float no_tax = 3500f;
-        if (money_4jin < no_tax) {
 
-            if (updateInfo) {
-                mInfo = String.format(
-                        "税前收入: %.2f\n" +
-                                "五险一金: %.2f\n" +
-                                "减去五险一金: %.2f\n" +
-                                "所得税税率: %.2f\n" +
-                                "所得税基数: %.2f\n" +
-                                "速算扣除数: %.2f\n" +
-                                "个人所得税: %.2f\n" +
-                                "税后收入: %.2f",
-                        money_x,
-                        ratio_sum,
-                        money_4jin,
-                        0f,
-                        0f,
-                        0f,
-                        0f,
-                        money_x);
-            }
-
-            return money_x;
-        }
-
-        float money_tax_base = money_4jin - no_tax;
-
-        if (updateInfo) {
-            mInfo = String.format(
-                    "税前收入: %.2f\n" +
-                    "五险一金: %.2f\n" +
-                    "减去五险一金: %.2f\n" +
-                    "所得税税率: %.2f\n" +
-                    "所得税基数: %.2f\n" +
-                    "速算扣除数: %.2f\n" +
-                    "个人所得税: %.2f\n" +
-                    "税后收入: %.2f",
-                    money_x,
-                    ratio_sum,
-                    money_4jin,
-                    ratio(money_tax_base),
-                    money_tax_base,
-                    susuan(money_tax_base),
-                    (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base)),
-                    money_4jin - (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base)));
-        }
-
-
-        return money_4jin - (money_tax_base * ratio(money_tax_base) - susuan(money_tax_base));
-    }
-
-    private float susuan(float x) {
-        for (TaxRato rato : TaxRato.values()) {
-            if (x > rato.min && x < rato.max) {
-                return rato.kouchu;
-            }
-        }
-
-        return 0;
-    }
-
-    private float ratio(float x) {
-        for (TaxRato rato : TaxRato.values()) {
-            if (x > rato.min && x < rato.max) {
-                return rato.ratio;
-            }
-        }
-
-        return 0.0f;
-    }
 }
