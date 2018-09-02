@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     RoundGraphPanel mRoundGraphPanel;
 
     private TextView mInfoText;
+    private TextView mRoundInfoText;
 
     private TaxCalculator mTaxCalculator;
 
@@ -76,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         mInfoText = findViewById(R.id.info);
         mInfoText.setText(mTaxCalculator.toString());
+
+        mRoundInfoText = findViewById(R.id.round_info);
+        mRoundInfoText.setText("住房公积金:\n医疗保险:\n失业保险:\n养老保险:\n税后月薪:");
     }
 
     @Override
