@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="3dp"
     tools:context=".MainActivity">
 
     <RelativeLayout
@@ -99,15 +100,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_view"
-        android:layout_margin="2dp"
-        android:padding="5dp"
+        android:padding="2dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/bg_view"
+            android:layout_marginBottom="5dp"
+            android:padding="2dp"
             android:orientation="horizontal">
 
             <TextView
@@ -125,6 +127,7 @@
 
         <SurfaceView
             android:id="@+id/surfaceView"
+            android:background="@drawable/bg_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1" />

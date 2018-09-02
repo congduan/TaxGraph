@@ -104,6 +104,7 @@ public class RoundGraphPanel implements Callback {
                 centerY + radius);
         fillPaint.setColor(Color.parseColor("#AAAAAA"));
         canvas.drawArc(rectF, 0, 360, true, fillPaint);
+        canvas.drawLine(centerX, centerY, centerX, centerY - radius, strokePaint);
 
         // draw arc
         fillPaint.setColor(Color.parseColor("#FFFF0000"));
@@ -128,6 +129,7 @@ public class RoundGraphPanel implements Callback {
         strokePaint.setTextSize(40);
         Rect bounds = new Rect();
         String text = "税前工资去向";
+        strokePaint.setColor(Color.parseColor("#AAAAAA"));
         strokePaint.getTextBounds(text, 0, text.length(), bounds);
         canvas.drawText(text, centerX - bounds.width() / 2, centerY + radius + 50, strokePaint);
 

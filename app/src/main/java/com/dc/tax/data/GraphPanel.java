@@ -22,6 +22,7 @@ public class GraphPanel implements Callback {
 
     public interface InfoUpdateListener {
         void onUpdate(String x);
+
         void onUpdateCurrentValue();
     }
 
@@ -91,7 +92,7 @@ public class GraphPanel implements Callback {
             mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * (maxX - minX) + minX;
             // mCurrentMoney = Math.round(mCurrentMoney); // 吸附整数
             // 吸附100的倍数
-            if(mCurrentMoney % UNIT_XIFU != 0){
+            if (mCurrentMoney % UNIT_XIFU != 0) {
                 mCurrentMoney = mCurrentMoney - mCurrentMoney % UNIT_XIFU;
             }
 
@@ -164,17 +165,18 @@ public class GraphPanel implements Callback {
         canvas.drawColor(Color.WHITE);
         strokePaint.setColor(Color.RED);
         strokePaint.setPathEffect(null);
-        canvas.drawRect(0, 0, width, height, strokePaint);
+//        canvas.drawRect(0, 0, width, height, strokePaint);
 
         // draw axes
-        strokePaint.setColor(Color.BLUE);
-        canvas.drawLine(0, 0.9f * height, width, 0.9f * height, strokePaint); // horizon
-        canvas.drawLine(0.1f * width, 0, 0.1f * width, height, strokePaint);  // vertical
+        strokePaint.setColor(Color.BLACK);
+        float axesPadding = 30;
+        canvas.drawLine(axesPadding, 0.9f * height, width, 0.9f * height, strokePaint); // horizon
+        canvas.drawLine(0.1f * width, 0, 0.1f * width, height - axesPadding, strokePaint);  // vertical
 
         // draw axes title
         float textSize = 30;
         strokePaint.setTextSize(textSize);
-        canvas.drawText(String.format("x: %d", minX), 0.1f * width - textSize, 0.9f * height + textSize, strokePaint);
+        canvas.drawText(String.format("%d", minX), 0.1f * width - textSize, 0.9f * height + textSize, strokePaint);
         canvas.drawText(String.format("x: %d", maxX), width - 4 * textSize, 0.9f * height + textSize, strokePaint);
         canvas.drawText(String.format("y: %d", maxY), 0.1f * width - 2 * textSize, textSize, strokePaint);
 
@@ -202,8 +204,8 @@ public class GraphPanel implements Callback {
         float py = 0.9f * canvasHeight - money_y / maxY * (0.9f * canvasHeight);
         strokePaint.setColor(Color.BLACK);
         strokePaint.setPathEffect(new DashPathEffect(new float[]{8, 8}, 0));
-        canvas.drawLine(0.1f * canvasWidth, py, canvasWidth, py, strokePaint);
-        canvas.drawLine(px, 0, px, 0.9f * canvasHeight, strokePaint);
+        canvas.drawLine(0.1f * canvasWidth, py, px, py, strokePaint);
+        canvas.drawLine(px, py, px, 0.9f * canvasHeight, strokePaint);
 
         fillPaint.setColor(Color.RED);
         canvas.drawCircle(px, py, 10, fillPaint);
