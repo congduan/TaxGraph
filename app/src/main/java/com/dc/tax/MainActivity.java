@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity  {
 
     private void initView() {
 
-        mInfoText = findViewById(R.id.info);
-
         mSurfaceView = findViewById(R.id.surfaceView);
         mSurfaceHolder = mSurfaceView.getHolder();
         mGraphPanel = new GraphPanel(mSurfaceHolder, mTaxCalculator);
@@ -75,6 +73,9 @@ public class MainActivity extends AppCompatActivity  {
         mRoundGraphPanel = new RoundGraphPanel(mSurfaceHolderRound);
         mRoundGraphPanel.init();
         mSurfaceHolderRound.addCallback(mRoundGraphPanel);
+
+        mInfoText = findViewById(R.id.info);
+        mInfoText.setText(mTaxCalculator.toString());
     }
 
     @Override

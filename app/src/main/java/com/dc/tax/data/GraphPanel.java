@@ -42,7 +42,7 @@ public class GraphPanel implements Callback {
     private float mCurrentX = 0.0f;
     private float mLastX = 0.0f;
 
-    private float mCurrentMoney = minX;
+    private float mCurrentMoney = 10000;
 
     // 所有的数据
     private List<PointF> pointFList = new ArrayList<PointF>();

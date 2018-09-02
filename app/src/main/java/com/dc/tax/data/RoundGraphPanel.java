@@ -86,7 +86,7 @@ public class RoundGraphPanel implements Callback {
         canvas.drawColor(Color.WHITE);
         strokePaint.setColor(Color.RED);
         strokePaint.setPathEffect(null);
-        canvas.drawRect(0, 0, width, height, strokePaint);
+//        canvas.drawRect(0, 0, width, height, strokePaint);
 
         // draw arc
         int min = Math.min(width, height);
@@ -110,10 +110,22 @@ public class RoundGraphPanel implements Callback {
         strokePaint.setColor(Color.BLUE);
         canvas.drawArc(rectF, 0, sweepAngle, true, strokePaint);
 
+        // draw label
+        /*
+        float left = 40;
+        float top = centerY - radius;
+        float right = width / 3.0f;
+        float bottom = centerY + radius;
+        canvas.drawRect(40, centerY + radius, width / 3.0f, centerY - radius, strokePaint);
+        float textMargin = 10;
+        strokePaint.setTextSize(30);
+        canvas.drawText("green: ", left + textMargin, top + textMargin, strokePaint);
+        */
+
         mSurfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-    public void updateCurrentValue(float value){
+    public void updateCurrentValue(float value) {
         this.mCurrentMoney = value;
         draw(canvasWidth, canvasHeight);
     }
