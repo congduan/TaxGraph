@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -35,9 +36,10 @@ public class GraphPanel implements Callback {
     Paint strokePaint;
     Paint fillPaint;
 
-    private int minX = 1000;
-    private int maxX = 20000;
-    private int maxY = 16000;
+    private int minXmoney = 1000;
+    private int maxXmoney = 20000;
+    private int minYmoney = 0;
+    private int maxYmoney = 16000;
 
     private float mCurrentX = 0.0f;
     private float mLastX = 0.0f;
@@ -89,7 +91,7 @@ public class GraphPanel implements Callback {
             mLastX = x;
 
             // update current value
-            mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * (maxX - minX) + minX;
+            mCurrentMoney = (mCurrentX - canvasWidth * 0.1f) / canvasWidth * (maxXmoney - minXmoney) + minXmoney;
             // mCurrentMoney = Math.round(mCurrentMoney); // 吸附整数
             // 吸附100的倍数
             if (mCurrentMoney % UNIT_XIFU != 0) {
@@ -128,12 +130,12 @@ public class GraphPanel implements Callback {
         float W = 0.9f * width;
         float H = 0.9f * height;
 
-        for (int i = minX; i < maxX; i += 100) {
+        for (int i = minXmoney; i < maxXmoney; i += 100) {
             float money_x = i;
             float money_y = mTaxCalculator.calcTax(money_x);
 
-            float px = 0.1f * width + (money_x - minX) / (maxX - minX) * W;
-            float py = H - money_y / maxY * H;
+            float px = 0.1f * width + (money_x - minXmoney) / (maxXmoney - minXmoney) * W;
+            float py = H - money_y / maxYmoney * H;
 
             pointFList.add(new PointF(px, py));
         }
@@ -173,12 +175,64 @@ public class GraphPanel implements Callback {
         canvas.drawLine(axesPadding, 0.9f * height, width, 0.9f * height, strokePaint); // horizon
         canvas.drawLine(0.1f * width, 0, 0.1f * width, height - axesPadding, strokePaint);  // vertical
 
+        // draw x axes
+        for (int moneyx = minXmoney; moneyx < maxXmoney; moneyx += 1000) {
+            float px = convert2CanvasX(moneyx);
+            if (moneyx % 1000 == 0 && moneyx % 5000 != 0) {
+                canvas.drawLine(
+                        px, 0.9f * canvasHeight,
+                        px, 0.9f * canvasHeight - 10,
+                        strokePaint);
+            } else if (moneyx % 5000 == 0) {
+                canvas.drawLine(
+                        px, 0.9f * canvasHeight,
+                        px, 0.9f * canvasHeight - 30,
+                        strokePaint);
+
+                String text = String.format("%d", moneyx);
+                Rect bound = new Rect();
+                strokePaint.setTextSize(30);
+                strokePaint.getTextBounds(text, 0, text.length(), bound);
+                canvas.drawText(text,
+                        px - bound.width() / 2, 0.9f * canvasHeight + bound.height() + 10,
+                        strokePaint);
+            }
+        }
+
+        // draw y axes
+        for (int moneyy = minYmoney; moneyy < maxYmoney; moneyy += 1000) {
+            float py = convert2CanvasY(moneyy);
+            if (moneyy % 1000 == 0 && moneyy % 5000 != 0) {
+                canvas.drawLine(
+                        0.1f * canvasWidth, py,
+                        0.1f * canvasWidth + 10, py,
+                        strokePaint);
+            } else if (moneyy % 5000 == 0) {
+                canvas.drawLine(
+                        0.1f * canvasWidth, py,
+                        0.1f * canvasWidth + 30, py,
+                        strokePaint);
+
+                String text = String.format("%d", moneyy);
+                Rect bound = new Rect();
+                strokePaint.setTextSize(30);
+                strokePaint.getTextBounds(text, 0, text.length(), bound);
+                canvas.drawText(text,
+                        0.1f * canvasWidth - bound.width() - 10, py + bound.height() / 2,
+                        strokePaint);
+            }
+        }
+
         // draw axes title
         float textSize = 30;
+
+        String text = String.format("%d", minXmoney);
+        Rect bound = new Rect();
         strokePaint.setTextSize(textSize);
-        canvas.drawText(String.format("%d", minX), 0.1f * width - textSize, 0.9f * height + textSize, strokePaint);
-        canvas.drawText(String.format("x: %d", maxX), width - 4 * textSize, 0.9f * height + textSize, strokePaint);
-        canvas.drawText(String.format("y: %d", maxY), 0.1f * width - 2 * textSize, textSize, strokePaint);
+        strokePaint.getTextBounds(text, 0, text.length(), bound);
+        canvas.drawText(text, 0.1f * width + 10, 0.9f * height + bound.height() + 10, strokePaint);
+        canvas.drawText(String.format("x"), width - 4 * textSize, 0.9f * height + textSize, strokePaint);
+        canvas.drawText(String.format("y"), 0.1f * width - 2 * textSize, textSize, strokePaint);
 
         // TODO draw grid
 
@@ -200,8 +254,8 @@ public class GraphPanel implements Callback {
         float money_y = mTaxCalculator.calcTax(mCurrentMoney);
 
         // draw current mark
-        float px = 0.1f * canvasWidth + (mCurrentMoney - minX) / (maxX - minX) * (0.9f * canvasWidth);
-        float py = 0.9f * canvasHeight - money_y / maxY * (0.9f * canvasHeight);
+        float px = 0.1f * canvasWidth + (mCurrentMoney - minXmoney) / (maxXmoney - minXmoney) * (0.9f * canvasWidth);
+        float py = 0.9f * canvasHeight - money_y / maxYmoney * (0.9f * canvasHeight);
         strokePaint.setColor(Color.BLACK);
         strokePaint.setPathEffect(new DashPathEffect(new float[]{8, 8}, 0));
         canvas.drawLine(0.1f * canvasWidth, py, px, py, strokePaint);
@@ -211,11 +265,29 @@ public class GraphPanel implements Callback {
         canvas.drawCircle(px, py, 10, fillPaint);
         strokePaint.setPathEffect(null);
 
-        strokePaint.setTextSize(30);
-        canvas.drawText(String.format("%.2f", mCurrentMoney), px - (float) textSize / 2, 0.9f * canvasHeight + textSize, strokePaint);
-        canvas.drawText(String.format("%.2f", money_y), px + 10, py + textSize, strokePaint);
+        text = String.format("%.0f", mCurrentMoney);
+        bound = new Rect();
+        strokePaint.getTextBounds(text, 0, text.length(), bound);
+        if (convert2CanvasX(mCurrentMoney) + bound.width() > canvasWidth) {
+            canvas.drawText(text, convert2CanvasX(mCurrentMoney) - bound.width() - 10, 0.9f * height - bound.height() - 10, strokePaint);
+        } else {
+            canvas.drawText(text, convert2CanvasX(mCurrentMoney), 0.9f * height - bound.height() - 10, strokePaint);
+        }
+        canvas.drawText(String.format("%.2f", money_y), px - bound.width() - 10, py - bound.height(), strokePaint);
 
         mSurfaceHolder.unlockCanvasAndPost(canvas);
+    }
+
+    private PointF convert2CanvasPoint(PointF pointF) {
+        return new PointF(convert2CanvasX(pointF.x), convert2CanvasY(pointF.y));
+    }
+
+    private float convert2CanvasX(float value) {
+        return 0.1f * canvasWidth + (value - minXmoney) / (maxXmoney - minXmoney) * (0.9f * canvasWidth);
+    }
+
+    private float convert2CanvasY(float value) {
+        return 0.9f * canvasHeight - (value - minYmoney) / (maxYmoney - minYmoney) * (0.9f * canvasHeight);
     }
 
 }
