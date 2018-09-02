@@ -30,6 +30,8 @@ public class RoundGraphPanel implements Callback {
     private float mCurrentMoney;
     private String mInfo = "";
 
+    float mCirclePadding = 50.0f;
+
     public RoundGraphPanel(SurfaceHolder surfaceHolder) {
         this.mSurfaceHolder = surfaceHolder;
     }
@@ -88,8 +90,7 @@ public class RoundGraphPanel implements Callback {
 
         // draw arc
         int min = Math.min(width, height);
-        float padding = 50.0f;
-        float radius = (min - padding) / 2;
+        float radius = (min - mCirclePadding) / 2;
         float centerX = width / 2.0f;
         float centerY = height / 2.0f;
 
