@@ -3,9 +3,12 @@ package com.dc.tax.data;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
+
+import com.dc.tax.TaxCalculator;
 
 /**
  * 饼状图
@@ -21,19 +24,15 @@ public class RoundGraphPanel implements Callback {
     Paint strokePaint;
     Paint fillPaint;
 
-    private int maxX = 20000;
-    private int maxY = 16000;
-
-    private float mCurrentX = 0.0f;
-    private float mLastX = 0.0f;
-
-    private float mCurrentMoney;
     private String mInfo = "";
 
     float mCirclePadding = 200.0f;
 
-    public RoundGraphPanel(SurfaceHolder surfaceHolder) {
+    private TaxCalculator mTaxCalculator;
+
+    public RoundGraphPanel(SurfaceHolder surfaceHolder, TaxCalculator taxCalculator) {
         this.mSurfaceHolder = surfaceHolder;
+        this.mTaxCalculator = taxCalculator;
     }
 
     public void init() {
@@ -103,12 +102,16 @@ public class RoundGraphPanel implements Callback {
                 centerY - radius,
                 centerX + radius,
                 centerY + radius);
-        float sweepAngle = mCurrentMoney / maxX * 360;
-        canvas.drawArc(rectF, 0, sweepAngle, true, fillPaint);
+        fillPaint.setColor(Color.parseColor("#AAAAAA"));
+        canvas.drawArc(rectF, 0, 360, true, fillPaint);
 
+        // draw arc
+        fillPaint.setColor(Color.parseColor("#FFFF0000"));
+        float sweepAngle = mTaxCalculator.getMoneyTax() / mTaxCalculator.getMoneyBeforeTax() * 360;
+        canvas.drawArc(rectF, -90, sweepAngle, true, fillPaint);
         // draw arc stroke
         strokePaint.setColor(Color.BLUE);
-        canvas.drawArc(rectF, 0, sweepAngle, true, strokePaint);
+        canvas.drawArc(rectF, -90, sweepAngle, true, strokePaint);
 
         // draw label
         /*
@@ -122,11 +125,16 @@ public class RoundGraphPanel implements Callback {
         canvas.drawText("green: ", left + textMargin, top + textMargin, strokePaint);
         */
 
+        strokePaint.setTextSize(40);
+        Rect bounds = new Rect();
+        String text = "税前工资去向";
+        strokePaint.getTextBounds(text, 0, text.length(), bounds);
+        canvas.drawText(text, centerX - bounds.width() / 2, centerY + radius + 50, strokePaint);
+
         mSurfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-    public void updateCurrentValue(float value) {
-        this.mCurrentMoney = value;
+    public void updateGraph() {
         draw(canvasWidth, canvasHeight);
     }
 }

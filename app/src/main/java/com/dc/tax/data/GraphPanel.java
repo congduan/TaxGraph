@@ -22,8 +22,7 @@ public class GraphPanel implements Callback {
 
     public interface InfoUpdateListener {
         void onUpdate(String x);
-
-        void onUpdateCurrentValue(float value);
+        void onUpdateCurrentValue();
     }
 
     private TaxCalculator mTaxCalculator;
@@ -42,7 +41,7 @@ public class GraphPanel implements Callback {
     private float mCurrentX = 0.0f;
     private float mLastX = 0.0f;
 
-    private float mCurrentMoney = 10000;
+    private float mCurrentMoney = 0.0f;
 
     // 所有的数据
     private List<PointF> pointFList = new ArrayList<PointF>();
@@ -99,7 +98,7 @@ public class GraphPanel implements Callback {
             // callback
             if (mInfoUpdateListener != null) {
                 mInfoUpdateListener.onUpdate(mTaxCalculator.toString());
-                mInfoUpdateListener.onUpdateCurrentValue(mCurrentMoney);
+                mInfoUpdateListener.onUpdateCurrentValue();
             }
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
                 || motionEvent.getAction() == MotionEvent.ACTION_DOWN) {

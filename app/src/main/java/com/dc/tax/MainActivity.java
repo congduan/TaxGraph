@@ -21,7 +21,7 @@ import com.dc.tax.data.RoundGraphPanel;
  * 6. 饼图
  * 7. 整数自动吸附
  */
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity  {
             }
 
             @Override
-            public void onUpdateCurrentValue(float value) {
-                mRoundGraphPanel.updateCurrentValue(value);
+            public void onUpdateCurrentValue() {
+                mRoundGraphPanel.updateGraph();
             }
         });
         mGraphPanel.init();
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity  {
 
         mSurfaceViewRound = findViewById(R.id.surfaceView_round);
         mSurfaceHolderRound = mSurfaceViewRound.getHolder();
-        mRoundGraphPanel = new RoundGraphPanel(mSurfaceHolderRound);
+        mRoundGraphPanel = new RoundGraphPanel(mSurfaceHolderRound, mTaxCalculator);
         mRoundGraphPanel.init();
         mSurfaceHolderRound.addCallback(mRoundGraphPanel);
 
@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity  {
     protected void onResume() {
         super.onResume();
     }
-
-
 
 
 }

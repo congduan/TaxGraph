@@ -149,4 +149,16 @@ public class TaxCalculator implements Calculable {
                 moneyTax);
         return mInfo;
     }
+
+    public float getMoneyBeforeTax(){
+        return moneyBeforeTax;
+    }
+
+    public float getMoney4Jin() {
+        return money4Jin;
+    }
+
+    public float getMoneyTax() {
+        return moneyTax;
+    }
 }
