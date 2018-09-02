@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -111,6 +112,13 @@ public class MainActivity extends AppCompatActivity {
         mRoundInfoText.setText("当前城市: 上海\n\n个人所得税:\n住房公积金:\n医疗保险:\n失业保险:\n养老保险:\n税后月薪:");
 
         mAboutButton = findViewById(R.id.about);
+        mAboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AboutDialog aboutDialog = new AboutDialog();
+                aboutDialog.show(MainActivity.this.getSupportFragmentManager(), "关于");
+            }
+        });
     }
 
     @Override
